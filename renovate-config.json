@@ -2,7 +2,8 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "description": "Standard preset across my repositories",
   "extends": [
-    "config:base"
+    "config:base",
+    ":dependencyDashboard"
   ],
   "labels": [
     "type: dependencies"
