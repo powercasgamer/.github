@@ -11,6 +11,15 @@
   "schedule": [
     "after 2am"
   ],
+  "hostRules": [
+    {
+      "hostType": "maven",
+      "matchHost": "https://repo.mizule.dev/private",
+      "authType": "Basic",
+      "username": "${env.MAVEN_USERNAME}",
+      "password": "${env.MAVEN_PASSWORD}"
+    }
+  ],
   "packageRules": [
     {
       "matchSourceUrlPrefixes": [
@@ -53,7 +62,7 @@
       "groupName": "gradle and github actions"
     }
   ],
-  "prHourlyLimit": 10,
+  "prHourlyLimit": 50,
   "semanticCommitType": "build",
   "commitMessagePrefix": "chore(deps): "
 }
