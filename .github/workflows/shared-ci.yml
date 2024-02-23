@@ -1,0 +1,122 @@
+name: 'Run CI'
+
+on:
+  workflow_call:
+    inputs:
+      main-branch:
+        type: string
+        description: 'The repository main branch'
+        required: true
+        default: 'main'
+      jdk-version:
+        type: number
+        description: 'JDK runtime version for the build'
+        required: false
+        default: 17
+      validate-gradle-wrapper:
+        type: boolean
+        description: 'Apply validate gradle wrapper action'
+        required: false
+        default: true
+      init-submodules:
+        type: boolean
+        description: 'Init submodules'
+        required: false
+        default: false
+      setup-gradle:
+        type: boolean
+        description: 'Apply gradle-build-action'
+        required: false
+        default: true
+      artifacts-path:
+        type: string
+        description: 'Path of artifact(s) to upload per upload-artifact spec. Blank uploads no artifacts.'
+        required: false
+        default: ''
+      loom:
+        type: boolean
+        description: 'Enable caching for loom project caches'
+        required: false
+        default: false
+      paperweight:
+        type: boolean
+        description: 'Enable caching for paperweight project caches'
+        required: false
+        default: false
+      vanillagradle:
+        type: boolean
+        description: 'Enable caching for VanillaGradle project caches'
+        required: false
+        default: false
+    secrets:
+      MAVEN_USERNAME:
+        required: false
+      MAVEN_PASSWORD:
+        required: false
+
+jobs:
+  build:
+    # Only run on PRs if the source branch is on someone else's repo
+    if: ${{ github.event_name != 'pull_request' || github.repository != github.event.pull_request.head.repo.full_name }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: "checkout git repository"
+        uses: actions/checkout@v4
+      - name: "validate gradle wrapper"
+        uses: gradle/wrapper-validation-action@v2
+        if: ${{ inputs.validate-gradle-wrapper }}
+      - name: "init submodules"
+        if: ${{ inputs.init-submodules }}
+        run: "git submodule update --init --recursive"
+      - name: "setup jdk ${{ inputs.jdk-version }}"
+        uses: "actions/setup-java@v4"
+        with:
+          distribution: "temurin"
+          java-version: "${{ inputs.jdk-version }}"
+      - name: "setup gradle"
+        uses: gradle/actions/setup-gradle@v3
+        if: ${{ inputs.setup-gradle }}
+        with:
+          cache-read-only: ${{ !startsWith(github.ref, 'refs/heads/${{ inputs.maven-branch }}') || github.event_name == 'pull_request' }}
+          dependency-graph: generate-and-submit
+          dependency-graph-continue-on-failure: false
+          add-job-summary-as-pr-comment: on-failure
+          gradle-home-cache-cleanup: true
+          build-scan-publish: true
+          build-scan-terms-of-service-url: "https://gradle.com/terms-of-service"
+          build-scan-terms-of-service-agree: "yes"
+        # gradle-build-action doesn't support caching files in the project dir
+      - name: "cache project local caches"
+        uses: actions/cache@v4
+        if: ${{ inputs.loom || inputs.paperweight || inputs.vanillagradle }}
+        with:
+          # we cache all three in the same tarball because they will probably have similar files which can compress better together
+          path: |
+            .gradle/loom-cache
+            .gradle/caches/VanillaGradle
+            **/.gradle/caches/paperweight
+          key: ${{ runner.os }}-project-local-gradle-caches-${{ hashFiles('**/libs.versions.*', '**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-project-local-gradle-caches-
+      - name: "execute gradle build"
+        run: ./gradlew build
+      - name: Determine status & prepare for publish
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          if [ "$(./gradlew properties | awk '/^version:/ { print $2; }' | grep '\-SNAPSHOT')" ]; then
+            echo "STATUS=snapshot" >> $GITHUB_ENV
+          else
+            echo "STATUS=release" >> $GITHUB_ENV
+          fi
+      - name: Publish
+        if: ${{ runner.os == 'Linux' && env.STATUS != 'release' && github.event_name == 'push' && startsWith(github.ref, 'refs/heads/${{ inputs.main-branch }}') }}
+        run: ./gradlew publish -x requireClean -x signMavenPublication
+        env:
+          ORG_GRADLE_PROJECT_mizuleUsername: ${{ secrets.MAVEN_USERNAME }}
+          ORG_GRADLE_PROJECT_mizulePassword: ${{ secrets.MAVEN_PASSWORD }}
+      - name: "upload artifacts"
+        uses: actions/upload-artifact@v4
+        if: ${{ inputs.artifacts-path != '' }}
+        with:
+          name: artifacts
+          path: ${{ inputs.artifacts-path }}
