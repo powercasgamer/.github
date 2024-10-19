@@ -63,7 +63,7 @@ jobs:
       - name: "checkout git repository"
         uses: actions/checkout@v4
       - name: "validate gradle wrapper"
-        uses: gradle/wrapper-validation-action@v2
+        uses: gradle/wrapper-validation-action@v3
         if: ${{ inputs.validate-gradle-wrapper }}
       - name: "init submodules"
         if: ${{ inputs.init-submodules }}
@@ -74,7 +74,7 @@ jobs:
           distribution: "temurin"
           java-version: "${{ inputs.jdk-version }}"
       - name: "setup gradle"
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         if: ${{ inputs.setup-gradle }}
         with:
           cache-read-only: ${{ !startsWith(github.ref, 'refs/heads/${{ inputs.maven-branch }}') || github.event_name == 'pull_request' }}
