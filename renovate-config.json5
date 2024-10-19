@@ -22,6 +22,12 @@
   ],
   "packageRules": [
     {
+      "matchPackagePrefixes": [
+        "com.palantir.baseline:gradle-baseline-java"
+      ],
+      "matchUpdateTypes": ["major"]
+    },
+    {
       "matchSourceUrlPrefixes": [
         "https://github.com/google/error-prone"
       ],
@@ -29,9 +35,22 @@
     },
     {
       "matchPackagePrefixes": [
+        "org.mongodb:mongodb-driver-sync",
+        "org.mongodb:bson"
+      ],
+      "groupName": "mongodb monorepo"
+    },
+    {
+      "matchPackagePrefixes": [
         "com.google.auto.value:"
       ],
       "groupName": "auto-value monorepo"
+    },
+    {
+      "matchSourceUrlPrefixes": [
+        "https://github.com/KyoriPowered/adventure"
+      ],
+      "groupName": "adventure monorepo"
     },
     {
       "matchSourceUrlPrefixes": [
@@ -56,15 +75,57 @@
     },
     {
       "matchManagers": ["github-actions", "gradle-wrapper"],
-      "groupName": "gradle and github actions"
+      "groupName": "build deps and github actions"
     },
     {
       "matchDepTypes": ["plugin"],
-      "groupName": "gradle and github actions"
+      "groupName": "build deps and github actions"
     },
     {
-      "matchPaths": ["build-logic/*", "buildSrc/*"],
-      "groupName": "gradle and github actions"
+      "matchPaths": ["build-logic/*", "buildSrc/*", "gradle/build-logic/*", "gradle/buildSrc/*"],
+      "groupName": "build deps and github actions"
+    },
+    {
+      "matchDatasources": [
+        "npm"
+      ],
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "all non-major npm dependencies",
+      "groupSlug": "all-npm-minor-patch"
+    },
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "all non-major docker images",
+      "groupSlug": "all-docker-minor-patch"
+    },
+    {
+      "matchDatasources": [
+        "pypi"
+      ],
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "all non-major python dependencies",
+      "groupSlug": "all-pypi-minor-patch"
     }
   ],
   "prHourlyLimit": 50,
