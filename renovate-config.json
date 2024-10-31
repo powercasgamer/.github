@@ -42,13 +42,49 @@
     },
     {
       "matchPackagePrefixes": [
+        "com.fasterxml.jackson.core:jackson-databind",
+        "com.fasterxml.jackson.core:jackson-annotations",
+        "com.fasterxml.jackson.core:jackson-core",
+        "com.fasterxml.jackson.datatype:jackson-datatype-jdk8",
+        "com.fasterxml.jackson.datatype:jackson-datatype-jsr310",
+        "com.fasterxml.jackson.datatype:jackson-datatype-joda",
+        "com.fasterxml.jackson.datatype:jackson-datatype-guava",
+        "com.fasterxml.jackson.module:jackson-module-parameter-names",
+        "com.fasterxml.jackson.module:jackson-module-jdk8",
+        "com.fasterxml.jackson.module:jackson-module-kotlin",
+        "com.fasterxml.jackson.module:jackson-module-afterburner",
+        "com.fasterxml.jackson.module:jackson-module-blackbird",
+        "com.fasterxml.jackson.module:jackson-module-scala_2.13",
+        "com.fasterxml.jackson.dataformat:jackson-dataformat-protobuf",
+        "com.fasterxml.jackson.dataformat:jackson-dataformat-avro",
+        "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml",
+        "com.fasterxml.jackson.dataformat:jackson-dataformat-xml",
+        "com.fasterxml.jackson.dataformat:jackson-dataformat-csv",
+        "com.fasterxml.jackson.dataformat:jackson-dataformat-cbor"
+      ],
+      "groupName": "jackson monorepo"
+    },
+    {
+      "matchSourceUrlPrefixes": [
+        "https://github.com/spongepowered/configurate",
+        "https://github.com/GeyserMC/Configurate",
+        "https://github.com/lucko/configurate-toml",
+        "https://github.com/InfernalSuite/configurate-toml"
+      ],
+      "groupName": "configurate monorepo"
+    },
+    {
+      "matchPackagePrefixes": [
         "com.google.auto.value:"
       ],
       "groupName": "auto-value monorepo"
     },
     {
       "matchSourceUrlPrefixes": [
-        "https://github.com/KyoriPowered/adventure"
+        "https://github.com/KyoriPowered/adventure",
+        "https://github.com/KyoriPowered/adventure-platform-mod",
+        "https://github.com/KyoriPowered/adventure-platform",
+        "https://github.com/KyoriPowered/adventure-text-feature-pagination"
       ],
       "groupName": "adventure monorepo"
     },
