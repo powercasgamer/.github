@@ -12,11 +12,13 @@ jobs:
     secrets: "inherit"
     #with:
     #  artifacts-path: ''
-    #  jdk-version: 17
+    #  jdk-version: 21
     #  main-branch: 'main'
-    #  validate-gradle-wrapper: true
     #  init-submodules: false
     #  setup-gradle: true
     #  loom: true
     #  paperweight: true
     #  vanillagradle: true
+    #  hangar-publish: false
+    #  modrinth-publish: false
+    #  maven-publish: false
