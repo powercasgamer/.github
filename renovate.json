@@ -1,12 +1,6 @@
 {
   "extends": [
     "local>powercasgamer/.github:renovate-config",
-    ":dependencyDashboard",
-    "helpers:pinGitHubActionDigests"
-  ],
-  "ignoreDeps": [],
-  "pinDigest": {
-    "automerge": true,
-    "automergeType": "pr"
-  }
+    ":dependencyDashboard"
+  ]
 }
